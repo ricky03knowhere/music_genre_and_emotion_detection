@@ -31,9 +31,9 @@ def camera_service():
             sendback_audio=False,
         )
 
+        st.info('Please wait...')
         while True:
-            with st.empty():
-                st.info('Please wait...')
+            # with st.empty():
             if start_time >= 3:
                 st.session_state["run"] = "false"
                 break
@@ -44,7 +44,7 @@ def camera_service():
         st.info("Detecting your emotion state...")
         st.session_state["run"] = "true"
     else:
-        st.write(emotion)
+        # st.write(emotion)
         np.save("./utils/emotion.npy", np.array([""]))
         st.session_state["run"] = "false"
 

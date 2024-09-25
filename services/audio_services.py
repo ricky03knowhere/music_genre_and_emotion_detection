@@ -2,6 +2,7 @@ import streamlit as st
 import sounddevice as sd
 import numpy as np
 import time
+import os
 from utils.utils import save_audio
 
 sample_rate = 44100  # samples per second
@@ -18,6 +19,7 @@ def callback(indata, frames, time, status):
 
 
 def recoding_audio(duration):
+    global recording
 
     st.write("Recording...")
     # duration_timer(duration)
@@ -41,4 +43,7 @@ def recoding_audio(duration):
     stream.stop()
     stream.close()
     st.write("Recording finished.")
+
+    os.remove("scipy.wav")
     save_audio("scipy.wav", sample_rate, recording)
+    recording = np.zeros(0)

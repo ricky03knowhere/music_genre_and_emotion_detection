@@ -26,15 +26,16 @@ def model_service(model_path):
     model = load_model(model_path)
 
     st.write("Extract MFCC... ✨.")
+    st.write('Audio after trimming to 30s')
 
-    if model_path == "./models/cnn__genre_detection_44100hz_0.91.h5":
-        val = extract_mfcc(file_path="scipy.wav")
-        val = np.array(val)
-        val = val[..., np.newaxis]
-    else:
-        val = load_and_preprocess_data(file_path="scipy.wav")
+    # if model_path == "./models/cnn__genre_detection_44100hz_0.91.h5":
+    #     val = extract_mfcc(file_path="scipy.wav")
+    #     val = np.array(val)
+    #     val = val[..., np.newaxis]
+    # else:
+    #     val = load_and_preprocess_data(file_path="scipy.wav")
+    val = load_and_preprocess_data(file_path="scipy.wav")
 
-    data = pd.DataFrame({"genres": genres_list, "values": list(genres.values())})
     st.write("Prediction starting... 🚀")
     prediction = model.predict(val)
 
@@ -45,20 +46,20 @@ def model_service(model_path):
 
 
 def model_result():
-    st.write("<<========= Genre Detection Accuracy =======>>")
+    st.write("<<========= Genre Detection Result Accuracy =======>>")
     # Sort the two lists together based on values in descending order
     global genres
-    st.write(genres)
+    # st.write(genres)
     genre_values = list(genres.values())
-    st.write(math.fsum(genre_values))
+    # st.write(math.fsum(genre_values))
     sorted_genres = sorted(
         zip(genres_list, genre_values), key=lambda x: x[1], reverse=True
     )
-    # st.write('sorted_genres ==> ', sorted_genres)
+    st.write('')
     global genre_detection_result
     for i, name in enumerate(genres_list):
         if name == sorted_genres[0][0]:
-            st.write("genre detection result :", i)
+            # st.write("genre detection result :", i)
             genre_detection_result = i
             break
     # Print the top 3 genres and their values
@@ -67,8 +68,8 @@ def model_result():
         st.write("{}\t\t==> {}%".format(genre, round(value * 100, 2)))
         val += float(value)
 
-    st.write(val)
-    st.write(f"Others : {round((1  - val) * 100 , 2) }%")
+    # st.write(val)
+    st.write(f"The other genres : {round((1  - val) * 100 , 2) }%")
 
     st.write("Prediction finished. 👌")
 

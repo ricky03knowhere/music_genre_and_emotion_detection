@@ -1,6 +1,7 @@
 import streamlit as st
 import soundfile as sf
 import io
+import os
 
 from utils.mfcc_extractor import *
 from utils.utils import *
@@ -8,6 +9,9 @@ from services.api_services import *
 from services.audio_services import *
 from services.model_services import *
 from services.camera_services import *
+
+
+st.set_page_config(page_title="GenMotion", page_icon="icon.png")
 
 st.title("Music Recommendation with Genre & Emotion Detection (production)")
 
@@ -28,22 +32,24 @@ song_result = st.slider("Song result", 3, 20)
 st.html('<h3 style="margin-top: 1.5em;color:khaki">Genre Detection 🎧</h3')
 activate_genre = st.toggle("Activate Genre Detection")
 
+genre_select = None
 if activate_genre:
-    model_path = st.radio(
-        "Select the model",
-        [
-            "./models/cnn__genre_detection_44100hz_0.91.h5",
-            "./models/cnn__genre_detection_41100hz_0.95(Tripathi Dataset).h5",
-        ],
-        captions=["Model accuracy: 91%", "Model accuracy: 95% (Tripathi Dataset)"],
-    )
+    # model_path = st.radio(
+    #     "Select the model",
+    #     [
+    #         "./models/cnn__genre_detection_44100hz_0.91.h5",
+    #         "./models/cnn__genre_detection_41100hz_0.95(Tripathi Dataset).h5",
+    #     ],
+    #     captions=["Model accuracy: 91%", "Model accuracy: 95% (Tripathi Dataset)"],
+    # )
+    model_path = "./models/cnn__genre_detection_41100hz_0.95(Tripathi Dataset).h5"
 
     music_input_method = st.radio(
         "Select the method of music input",
-        ["Record music 🎙️", "Upload music file 🎵"],
+        ["Upload music file 🎵", "Record music 🎙️"],
         captions=[
-            "Record music sample around you",
             "Upload sample music from your device",
+            "Record music sample around you",
         ],
     )
 
@@ -64,7 +70,7 @@ if activate_genre:
             model_service(model_path)
             model_result()
 
-    st.write("result", get_genre_detection_result())
+    # st.write("result", get_genre_detection_result())
     genre_select = st.selectbox(
         "Music genre to search",
         [
@@ -81,7 +87,7 @@ if activate_genre:
         ],
         index=get_genre_detection_result(),
     )
-    st.write("before ==>", genre_select)
+    # st.write("before ==>", genre_select)
 
 
 st.html('<h3 style="margin-top: 1.5em;color:khaki">Emotion Detection 🫠</h3')
@@ -95,7 +101,7 @@ if activate_emotion:
     if detect_emotion:
         st.session_state["is_open"] = True
         np.save("./utils/emotion.npy", np.array([""]))
-        st.write("is open :", detect_emotion)
+        # st.write("is open :", detect_emotion)
         camera_service()
 
     st.session_state["is_open"] = False
@@ -103,9 +109,9 @@ if activate_emotion:
     if st.session_state["is_open"] == False:
         st.session_state["run"] = "false"
 
-    st.write("is open :", detect_emotion)
-    st.write("is open state :", st.session_state["is_open"])
-    st.write("in main :", get_emotion())
+    # st.write("is open :", detect_emotion)
+    # st.write("is open state :", st.session_state["is_open"])
+    st.write("Emotion detection result :", get_emotion())
     emotion_label = ["happy", "sad", "angry", "love", "neutral", "surprise"]
     cornverter = {j: i for i, j in enumerate(emotion_label)}
 
@@ -119,7 +125,10 @@ if activate_emotion:
         index=emotion_idx,
     )
 
-    st.write("emotion ==>", emotion)
+    if os.path.exists("/utils/emotion.npy"):
+        os.remove("utils/emotion.npy")
+
+    # st.write("emotion ==>", emotion)
 button_search = st.button("Search Song")
 if button_search:
     st.session_state["run"] = "false"

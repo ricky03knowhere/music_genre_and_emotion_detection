@@ -3,6 +3,7 @@ import spotipy
 import streamlit as st
 from spotipy.oauth2 import SpotifyClientCredentials
 from dotenv import load_dotenv
+import time
 
 load_dotenv()
 # Spotify Client
@@ -45,11 +46,23 @@ def search_song(emotion, genre_select, artist, year, song_result):
     keyword = (
         f"genre={genre_select}{separator}{emotion_idx}&artist={artist}&year={year}"
     )
-    st.write(keyword)
+
+    year_tag = "None" if year == "" else year
+    genre_select_tag = "None" if genre_select == "" else genre_select
+    artist_tag = "None" if artist == "" else artist
+    emotion_idx_tag = "None" if emotion == "" else emotion
+
+    st.write(
+        f"Genre : <b style='color:khaki'>{genre_select_tag}</b>, Emotion : <b style='color:khaki'>{emotion_idx_tag}</b>, Year : <b style='color:khaki'>{year_tag}</b>,</br>Artist : <b style='color:khaki'>{artist_tag}</b>, Song Result : <b style='color:khaki'>{song_result}</b></h6>",
+        unsafe_allow_html=True,
+    )
+    # st.write(keyword)
     # if genre_select is not None:
     try:
-        result = client.search(q=keyword, type="track", limit=song_result)
-        print("result ==>", result)
+        with st.spinner("Retrieving music recomendation..."):
+            result = client.search(q=keyword, type="track", limit=song_result)
+            time.sleep(1)
+            print("result ==>", result)
     except Exception as err:
         print(err)
     # elif emotion is not None:
