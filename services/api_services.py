@@ -122,7 +122,6 @@ def search_song(genre_select, artist, year, song_result, emotion=""):
                     st.audio(tracks[idx]["preview_url"])
                 else:
                     st.warning("⚠️ Preview is not available")
-            st.divider()
             idx += 1
     else:
         st.markdown("#### No song for recommendation ")
