@@ -17,13 +17,13 @@ client = spotipy.Spotify(
 
 
 # Song Searching
-def search_song(emotion, genre_select, artist, year, song_result):
+def search_song(genre_select, artist, year, song_result, emotion=""):
     st.html(
         '<h3 style="margin-top: 1.5em;color:lightSalmon">Music Recomendations 🪄✨</h3>'
     )
 
     result = {}
-    # st.write("after ==>", genre_select)
+    # st.write("after ==>", emotion)
 
     emotion_label = ["happy", "sad", "angry", "love", "neutral", "surprise"]
     genre_label = ["happy", "sad", "hardcore", "romance", "chill", "heavy-metal"]
@@ -65,10 +65,6 @@ def search_song(emotion, genre_select, artist, year, song_result):
             print("result ==>", result)
     except Exception as err:
         print(err)
-    # elif emotion is not None:
-    #     result = client.search(q=emotion, type="track", limit=3)
-    # else:
-    # st.warning('Please select the genre first!')
 
     # Get Tracks List
     # st.json(result and result)
@@ -89,18 +85,20 @@ def search_song(emotion, genre_select, artist, year, song_result):
         # st.json(tracks)
 
         rows = [
-            st.columns([2, 3], vertical_alignment="center") for i in range(len(tracks))
+            st.columns([1, 1.5, 0.5, 0.6], vertical_alignment="center")
+            for i in range(len(tracks))
         ]
 
         for idx, col in enumerate(rows):
+
             with col[0]:
                 st.write(
-                    f'<img src="{tracks[idx]["picture"]}" width="120" style="margin-left:8em;border-radius:120px"/>',
+                    f'<img src="{tracks[idx]["picture"]}" width="60" style="margin-left:7em;border-radius:6px" alt="404, image not available"/>',
                     unsafe_allow_html=True,
                 )
             with col[1]:
                 st.write(
-                    f'<h5 style="margin-top:2em"><a target="_blank" href="{tracks[idx]["href"]}" style="text-decoration:none;color: tomato">{tracks[idx]["title"]}</a></h5>',
+                    f'<h5 style="margin-top:1em"><a target="_blank" href="{tracks[idx]["href"]}" style="text-decoration:none;color: tomato">{tracks[idx]["title"]}</a></h5>',
                     unsafe_allow_html=True,
                 )
                 artists_name = [
@@ -109,14 +107,22 @@ def search_song(emotion, genre_select, artist, year, song_result):
                 ]
 
                 st.write(
-                    f'{" , ".join(artists_name)}<span style="margin:0 0.3em"> | </span> <span style="color:lightSalmon">{tracks[idx]["year"][:4]}</span>',
+                    f'{" , ".join(artists_name)}',
                     unsafe_allow_html=True,
                 )
 
+            with col[2]:
+                st.write(
+                    f'<span style="color:lightSalmon">{tracks[idx]["year"][:4]}</span>',
+                    unsafe_allow_html=True,
+                )
+
+            with col[3]:
                 if tracks[idx]["preview_url"]:
                     st.audio(tracks[idx]["preview_url"])
                 else:
                     st.warning("⚠️ Preview is not available")
+            st.divider()
             idx += 1
     else:
         st.markdown("#### No song for recommendation ")

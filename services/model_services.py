@@ -26,14 +26,8 @@ def model_service(model_path):
     model = load_model(model_path)
 
     st.write("Extract MFCC... ✨.")
-    st.write('Audio after trimming to 30s')
+    st.write("Audio after trimming to 30s")
 
-    # if model_path == "./models/cnn__genre_detection_44100hz_0.91.h5":
-    #     val = extract_mfcc(file_path="scipy.wav")
-    #     val = np.array(val)
-    #     val = val[..., np.newaxis]
-    # else:
-    #     val = load_and_preprocess_data(file_path="scipy.wav")
     val = load_and_preprocess_data(file_path="scipy.wav")
 
     st.write("Prediction starting... 🚀")
@@ -55,7 +49,7 @@ def model_result():
     sorted_genres = sorted(
         zip(genres_list, genre_values), key=lambda x: x[1], reverse=True
     )
-    st.write('')
+    st.write("")
     global genre_detection_result
     for i, name in enumerate(genres_list):
         if name == sorted_genres[0][0]:
@@ -76,4 +70,17 @@ def model_result():
 
 def get_genre_detection_result():
     global genre_detection_result
-    return genre_detection_result
+
+    genre_idx = [
+        "blues",
+        "classical",
+        "country",
+        "disco",
+        "hip-hop",
+        "jazz",
+        "metal",
+        "pop",
+        "reggae",
+        "rock",
+    ]
+    return genre_idx[genre_detection_result]
